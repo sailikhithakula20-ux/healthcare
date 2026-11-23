@@ -60,8 +60,11 @@ class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     SESSION_COOKIE_SECURE = True
-    # In production, ensure MySQL is configured
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    # In production, use DATABASE_URL (MySQL/PostgreSQL), falling back to SQLite if unset
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'DATABASE_URL',
+        f"sqlite:///{os.path.join(basedir, 'instance', 'health_portal.db')}"
+    )
 
 
 config_by_name = {

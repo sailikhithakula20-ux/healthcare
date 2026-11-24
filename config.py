@@ -56,7 +56,8 @@ def get_engine_options(uri):
         return {
             'poolclass': NullPool,
             'connect_args': {
-                'sslmode': 'require'
+                'sslmode': 'require',
+                'prepare_threshold': None
             }
         }
     return {

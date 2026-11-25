@@ -9,7 +9,7 @@ from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, current_user
 from flask_wtf.csrf import CSRFProtect
 
-from config import config_by_name
+from config import get_config
 from models import db, User
 
 # Global extension instances
@@ -23,7 +23,12 @@ def create_app(config_name=None):
         config_name = os.environ.get('FLASK_ENV', 'development')
 
     app = Flask(__name__)
-    app.config.from_object(config_by_name.get(config_name, 'default'))
+    cfg = get_config(config_name)
+    app.config.from_object(cfg)
+
+    # Allow configuration-specific hooks (e.g. Production Vercel validation)
+    if hasattr(cfg, 'init_app'):
+        cfg.init_app(app)
 
     # Initialize extensions
     db.init_app(app)

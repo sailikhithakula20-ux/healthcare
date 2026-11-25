@@ -10,8 +10,7 @@ import sys
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from flask import Flask
-from config import config_by_name
+from app import create_app
 from models import (
     db,
     User,
@@ -33,10 +32,7 @@ from datetime import date, datetime
 def seed_database(app=None):
     """Seed the database with verified nutritional and platform master data."""
     if app is None:
-        env = os.environ.get('FLASK_ENV', 'development')
-        app = Flask(__name__)
-        app.config.from_object(config_by_name.get(env, 'default'))
-        db.init_app(app)
+        app = create_app()
 
     with app.app_context():
         # Ensure all tables are created
